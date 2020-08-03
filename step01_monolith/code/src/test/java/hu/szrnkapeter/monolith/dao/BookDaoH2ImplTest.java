@@ -59,6 +59,7 @@ public class BookDaoH2ImplTest extends AbstractServiceTest {
 	
 	@Test
 	public void test04_save() {
+		Mockito.when(repository.save(ArgumentMatchers.any(BookEntity.class))).thenReturn(new BookEntity());
 		// Test1
 		service.save(new BookDto());
 		Mockito.verify(repository).save(ArgumentMatchers.any(BookEntity.class));

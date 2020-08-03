@@ -1,6 +1,4 @@
-# Monolith service demo
-
-This is my sample application to demonstrate a classical monolithic application. This is the structure, what I'm currently using at my actual job. I'll do a refactor on another repository.
+# Monolith to Microservice refactoring demo
 
 ## About the application
 This application represents a fictive Book store with a simple order management and a payment service. The books can be saved, deleted, listed, and displayed via REST API. The orders and payments can be initiated, finalized, and cancelled. It's not a fully functioning online store, it's just demonstrates a simple,

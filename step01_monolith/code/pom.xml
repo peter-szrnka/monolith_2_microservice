@@ -12,9 +12,9 @@
 
 	<packaging>war</packaging>
 	<groupId>hu.szrnkapeter</groupId>
-	<artifactId>monolith-service</artifactId>
+	<artifactId>step-1-monolith-service</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>Monolith service demo</name>
+	<name>Step 1: Monolith service demo</name>
 
 	<properties>
 		<java.version>8</java.version>
