@@ -85,7 +85,6 @@ public class PaymentDaoRedisImpl extends DaoBase<PaymentEntity> implements Payme
 
 	private PaymentDto convertToDto(PaymentEntity entity) {
 		PaymentDto dto = new PaymentDto();
-		// TODO put it in a common converter
 		dto.setId(entity.getId());
 		dto.setPaymentDate(entity.getPaymentDate());
 		dto.setTransactionId(entity.getTransactionId());

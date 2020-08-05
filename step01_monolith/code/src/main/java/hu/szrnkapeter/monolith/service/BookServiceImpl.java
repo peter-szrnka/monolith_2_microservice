@@ -15,7 +15,7 @@ import hu.szrnkapeter.monolith.dto.IdDto;
  * @author Peter Szrnka
  */
 @Service
-public class BookServiceImpl extends AbstractServiceImpl<BookDto, BookDao> implements BookService {
+public class BookServiceImpl extends BaseService<BookDto, BookDao> implements BookService {
 
 	/*
 	 * (non-Javadoc)

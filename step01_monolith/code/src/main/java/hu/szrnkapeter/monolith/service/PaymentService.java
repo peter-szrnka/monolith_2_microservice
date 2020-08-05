@@ -11,7 +11,7 @@ import hu.szrnkapeter.monolith.dto.PaymentDto;
 public interface PaymentService extends AbstractService<PaymentDto> {
 	
 	/**
-	 * TODO
+	 * Pays the given order.
 	 * 
 	 * @param orderId
 	 * @return

@@ -11,7 +11,7 @@ import hu.szrnkapeter.monolith.dao.AbstractDao;
  *
  * @param <T> The type of the result Dto.
  */
-public abstract class AbstractServiceImpl<T,D extends AbstractDao<T>> {
+public abstract class BaseService<T,D extends AbstractDao<T>> {
 
 	@Autowired
 	protected D dao;

@@ -12,6 +12,7 @@ import org.mockito.Mockito;
 
 import hu.szrnkapeter.monolith.AbstractServiceTest;
 import hu.szrnkapeter.monolith.dao.PaymentDao;
+import hu.szrnkapeter.monolith.dto.IdDto;
 import hu.szrnkapeter.monolith.dto.PaymentDto;
 
 public class PaymentServiceImplTest extends AbstractServiceTest {
@@ -20,6 +21,8 @@ public class PaymentServiceImplTest extends AbstractServiceTest {
 	private PaymentServiceImpl service;
 	@Mock
 	private PaymentDao dao;
+	@Mock
+	private OrderFinalizationService finalizationService;
 
 	@Test
 	public void test01_delete() {
@@ -42,5 +45,13 @@ public class PaymentServiceImplTest extends AbstractServiceTest {
 		Mockito.when(dao.getById(ArgumentMatchers.anyLong())).thenReturn(new PaymentDto());
 		PaymentDto response = service.getById(1L);
 		Assert.assertNotNull(RESPONSE_CANNOT_NULL, response);
+	}
+
+	@Test
+	public void test04_payOrder() {
+		Mockito.when(dao.save(ArgumentMatchers.any(PaymentDto.class))).thenReturn(new IdDto(1L));
+		IdDto response = service.payOrder(1L);
+		Assert.assertNotNull(RESPONSE_CANNOT_NULL, response);
+		Assert.assertEquals("Wrong response!", Long.valueOf(1L), response.getId());
 	}
 }

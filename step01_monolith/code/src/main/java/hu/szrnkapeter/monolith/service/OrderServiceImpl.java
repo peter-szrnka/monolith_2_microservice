@@ -21,7 +21,7 @@ import hu.szrnkapeter.monolith.type.OrderStatus;
  * @author Peter Szrnka
  */
 @Service
-public class OrderServiceImpl extends AbstractServiceImpl<OrderDto, OrderDao> implements OrderService {
+public class OrderServiceImpl extends BaseService<OrderDto, OrderDao> implements OrderService {
 
 	@Autowired
 	private BookDao bookDao;

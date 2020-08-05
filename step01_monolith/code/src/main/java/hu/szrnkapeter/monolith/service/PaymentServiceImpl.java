@@ -18,7 +18,7 @@ import hu.szrnkapeter.monolith.dto.PaymentDto;
  * @author Peter Szrnka
  */
 @Service
-public class PaymentServiceImpl extends AbstractServiceImpl<PaymentDto, PaymentDao> implements PaymentService {
+public class PaymentServiceImpl extends BaseService<PaymentDto, PaymentDao> implements PaymentService {
 
 	@Autowired
 	private OrderFinalizationService finalizationService;

@@ -1,9 +1,11 @@
 package hu.szrnkapeter.monolith.dao;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import org.apache.commons.collections4.ListUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;
@@ -80,13 +82,13 @@ public class OrderDaoRedisImpl extends DaoBase<OrderEntity> implements OrderDao 
 	}
 
 	private List<BookEntity> convertDtoListToEntity(List<IdDto> books) {
-		return books.stream().map(dto -> {
+		return ListUtils.emptyIfNull(books).stream().map(dto -> {
 			Optional<BookEntity> entity = bookRepository.findById(dto.getId());
 
 			if (!entity.isPresent()) {
 				return null;
 			}
-			
+
 			return entity.get();
 		}).collect(Collectors.toList());
 	}
@@ -109,11 +111,16 @@ public class OrderDaoRedisImpl extends DaoBase<OrderEntity> implements OrderDao 
 
 	private OrderDto convertToDto(OrderEntity entity) {
 		OrderDto dto = new OrderDto();
-		// TODO put it in a common converter
 		dto.setId(entity.getId());
 		dto.setOrderDate(entity.getOrderDate());
 		dto.setOrderStatus(entity.getOrderStatus());
 		dto.setTransactionId(entity.getTransactionId());
+
+		List<IdDto> books = new ArrayList<>();
+		for (BookEntity book : ListUtils.emptyIfNull(entity.getBooks())) {
+			books.add(new IdDto(book.getId()));
+		}
+		dto.setBooks(books);
 		return dto;
 	}
 }
