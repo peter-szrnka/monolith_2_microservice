@@ -1,5 +1,6 @@
 package hu.szrnkapeter.monolith.dao;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -7,12 +8,13 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;
+import org.thymeleaf.util.ListUtils;
 
-import hu.szrnkapeter.monolith.dto.BookDto;
 import hu.szrnkapeter.monolith.dto.IdDto;
 import hu.szrnkapeter.monolith.dto.OrderDto;
 import hu.szrnkapeter.monolith.h2.entity.BookEntity;
 import hu.szrnkapeter.monolith.h2.entity.OrderEntity;
+import hu.szrnkapeter.monolith.h2.repository.H2BookRepository;
 import hu.szrnkapeter.monolith.h2.repository.H2OrderRepository;
 import hu.szrnkapeter.monolith.utils.Constants;
 
@@ -22,6 +24,8 @@ public class OrderDaoH2Impl extends DaoBase<OrderEntity> implements OrderDao {
 	
 	@Autowired
 	private H2OrderRepository repository;
+	@Autowired
+	private H2BookRepository bookRepository;
 	
 	/*
 	 * (non-Javadoc)
@@ -72,16 +76,16 @@ public class OrderDaoH2Impl extends DaoBase<OrderEntity> implements OrderDao {
 		return new IdDto(entity.getId());
 	}
 
-	private List<BookEntity> convertDtoListToEntity(List<BookDto> books) {
+	private List<BookEntity> convertDtoListToEntity(List<IdDto> books) {
 		return books.stream().map(dto -> {
-			// TODO put it in a common converter
-			BookEntity entity = new BookEntity();
-			entity.setAuthor(dto.getAuthor());
-			entity.setId(dto.getId());
-			entity.setReleaseYear(dto.getReleaseYear());
-			entity.setTitle(dto.getTitle());
-			return entity;
-		}).collect(Collectors.toList());
+			Optional<BookEntity> entity = bookRepository.findById(dto.getId());
+			
+			if(!entity.isPresent()) {
+				return null;
+			}
+
+			return entity.get();
+		}).filter(entity -> entity != null).collect(Collectors.toList());
 	}
 
 	/*
@@ -101,11 +105,17 @@ public class OrderDaoH2Impl extends DaoBase<OrderEntity> implements OrderDao {
 
 	private OrderDto convertToDto(OrderEntity entity) {
 		OrderDto dto = new OrderDto();
-		// TODO put it in a common converter
+
 		dto.setId(entity.getId());
 		dto.setOrderDate(entity.getOrderDate());
 		dto.setOrderStatus(entity.getOrderStatus());
 		dto.setTransactionId(entity.getTransactionId());
+		
+		List<IdDto> books = new ArrayList<>();
+		for(BookEntity book : entity.getBooks()) {
+			books.add(new IdDto(book.getId()));
+		}
+		dto.setBooks(books);
 		return dto;
 	}
 }

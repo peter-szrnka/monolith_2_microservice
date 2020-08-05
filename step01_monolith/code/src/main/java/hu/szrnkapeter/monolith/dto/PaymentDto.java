@@ -10,7 +10,7 @@ import lombok.Data;
 public class PaymentDto {
 
 	private Long id;
+	private String transactionId;
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
 	private Date paymentDate;
-	private String transactionId;
 }

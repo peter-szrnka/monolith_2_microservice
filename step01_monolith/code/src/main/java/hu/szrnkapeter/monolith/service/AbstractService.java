@@ -2,8 +2,6 @@ package hu.szrnkapeter.monolith.service;
 
 import java.util.List;
 
-import hu.szrnkapeter.monolith.dto.IdDto;
-
 public interface AbstractService<T> {
 
 	/**
@@ -20,13 +18,6 @@ public interface AbstractService<T> {
 	 * @return
 	 */
 	T getById(Long id);
-	
-	/**
-	 * Saves a new book.
-	 * 
-	 * @param dto
-	 */
-	IdDto save(T dto);
 	
 	/**
 	 * Deletes a book by id

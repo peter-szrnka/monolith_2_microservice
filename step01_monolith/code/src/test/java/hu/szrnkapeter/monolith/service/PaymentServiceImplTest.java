@@ -43,9 +43,4 @@ public class PaymentServiceImplTest extends AbstractServiceTest {
 		PaymentDto response = service.getById(1L);
 		Assert.assertNotNull(RESPONSE_CANNOT_NULL, response);
 	}
-	
-	@Test
-	public void test04_save() {
-		service.save(new PaymentDto());
-	}
 }

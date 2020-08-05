@@ -1,7 +1,10 @@
 package hu.szrnkapeter.monolith.service;
 
+import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,6 +19,9 @@ import hu.szrnkapeter.monolith.dto.PaymentDto;
  */
 @Service
 public class PaymentServiceImpl extends AbstractServiceImpl<PaymentDto, PaymentDao> implements PaymentService {
+
+	@Autowired
+	private OrderFinalizationService finalizationService;
 
 	/*
 	 * (non-Javadoc)
@@ -39,21 +45,27 @@ public class PaymentServiceImpl extends AbstractServiceImpl<PaymentDto, PaymentD
 
 	/*
 	 * (non-Javadoc)
-	 * @see hu.szrnkapeter.monolith.service.AbstractService#save(java.lang.Object)
-	 */
-	@Transactional
-	@Override
-	public IdDto save(PaymentDto dto) {
-		return dao.save(dto);
-	}
-
-	/*
-	 * (non-Javadoc)
 	 * @see hu.szrnkapeter.monolith.service.AbstractService#delete(java.lang.Long)
 	 */
 	@Transactional
 	@Override
 	public void delete(Long id) {
 		dao.delete(id);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see hu.szrnkapeter.monolith.service.PaymentService#payOrder(java.lang.Long)
+	 */
+	@Transactional
+	@Override
+	public IdDto payOrder(Long orderId) {
+		PaymentDto dto = new PaymentDto();
+		dto.setTransactionId(UUID.randomUUID().toString());
+		dto.setPaymentDate(new Date());
+		IdDto response = dao.save(dto);
+		
+		finalizationService.finalizeOrder(orderId, dto.getTransactionId());
+		return response;
 	}
 }

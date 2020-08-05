@@ -30,8 +30,8 @@ public class PaymentController {
 		return service.getAll();
 	}
 	
-	@PostMapping("/save")
+	/*@PostMapping("/save")
 	public void save(@RequestBody PaymentDto dto) {
 		service.save(dto);
-	}
+	}*/
 }

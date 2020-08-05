@@ -10,7 +10,7 @@ import lombok.Data;
 public class OrderDto {
 	
 	private Long id;
-	private List<BookDto> books;
+	private List<IdDto> books;
 	private OrderStatus orderStatus;
 	private LocalDate orderDate;
 	private String transactionId;

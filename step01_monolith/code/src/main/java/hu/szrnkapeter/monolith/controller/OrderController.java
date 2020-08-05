@@ -32,8 +32,13 @@ public class OrderController {
 		return service.getAll();
 	}
 	
-	@PostMapping("/save")
-	public @ResponseBody IdDto save(@RequestBody OrderDto dto) {
-		return service.save(dto);
+	@PostMapping("/createDraft")
+	public @ResponseBody IdDto createDraft(@RequestBody OrderDto dto) {
+		return service.createDraft(dto);
+	}
+	
+	@PostMapping("/initPayment/{id}")
+	public void initPayment(@PathVariable("id") Long id) {
+		service.initPayment(id);
 	}
 }
