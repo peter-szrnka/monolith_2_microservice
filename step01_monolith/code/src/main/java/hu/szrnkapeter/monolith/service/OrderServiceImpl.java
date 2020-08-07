@@ -65,6 +65,10 @@ public class OrderServiceImpl extends BaseService<OrderDto, OrderDao> implements
 		dao.delete(id);
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see hu.szrnkapeter.monolith.service.OrderService#createDraft(hu.szrnkapeter.monolith.dto.OrderDto)
+	 */
 	@Transactional
 	@Override
 	public IdResponseDto createDraft(OrderDto dto) {
@@ -83,6 +87,10 @@ public class OrderServiceImpl extends BaseService<OrderDto, OrderDao> implements
 		return dao.save(dto);
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see hu.szrnkapeter.monolith.service.OrderService#initPayment(java.lang.Long)
+	 */
 	@Transactional
 	@Override
 	public void initPayment(Long orderId) {
@@ -94,6 +102,10 @@ public class OrderServiceImpl extends BaseService<OrderDto, OrderDao> implements
 		startPayment(response.getId());
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see hu.szrnkapeter.monolith.service.OrderService#finalizeOrder(java.lang.Long, java.lang.String)
+	 */
 	@Override
 	public void finalizeOrder(Long orderId, String transactionId) {
 		OrderDto dto = dao.getById(orderId);
@@ -102,9 +114,13 @@ public class OrderServiceImpl extends BaseService<OrderDto, OrderDao> implements
 		dto.setOrderStatus(OrderStatus.FINALIZED);
 		dto.setTransactionId(transactionId);
 		IdResponseDto response = dao.save(dto);
-		System.out.println("Order finalized! Id = " + response.getId());
+		LOG.info("Order finalized! Id = {}", response.getId());
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see hu.szrnkapeter.monolith.service.OrderService#startPayment(java.lang.Long)
+	 */
 	@Override
 	public void startPayment(Long orderId) {
 		OrderDto dto = dao.getById(orderId);
@@ -113,11 +129,13 @@ public class OrderServiceImpl extends BaseService<OrderDto, OrderDao> implements
 		dto.setOrderStatus(OrderStatus.PAYMENT_STARTED);
 		dao.save(dto);
 
+		LOG.info("Payment started for order={}", orderId);
 		paymentService.payOrder(orderId);
 	}
 
 	private void checkDto(OrderDto dto, OrderStatus status) {
 		if (dto == null || !status.equals(dto.getOrderStatus())) {
+			LOG.error("Only {} payments are allowed!", status.name());
 			throw new RuntimeException("Only " + status.name() + " payments are allowed!");
 		}
 	}
