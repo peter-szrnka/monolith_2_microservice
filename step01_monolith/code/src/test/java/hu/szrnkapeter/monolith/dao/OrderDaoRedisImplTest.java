@@ -11,7 +11,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 
-import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 
 import hu.szrnkapeter.monolith.AbstractServiceTest;

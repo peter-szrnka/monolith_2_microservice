@@ -12,7 +12,6 @@ import org.mockito.Mockito;
 
 import hu.szrnkapeter.monolith.AbstractServiceTest;
 import hu.szrnkapeter.monolith.dao.PaymentDao;
-import hu.szrnkapeter.monolith.dto.IdDto;
 import hu.szrnkapeter.monolith.dto.IdResponseDto;
 import hu.szrnkapeter.monolith.dto.PaymentDto;
 

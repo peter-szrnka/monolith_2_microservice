@@ -8,6 +8,8 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.apache.commons.collections4.SetUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;
@@ -26,6 +28,8 @@ import hu.szrnkapeter.monolith.utils.Constants;
 @ConditionalOnProperty(name = Constants.PARAMETER_DAO_IMPL, havingValue = Constants.DAO_IMPL_H2)
 @Component
 public class OrderDaoH2Impl extends DaoBase<OrderEntity> implements OrderDao {
+	
+	private static final Logger LOG = LoggerFactory.getLogger(OrderDaoH2Impl.class);
 
 	@Autowired
 	private H2OrderRepository repository;
@@ -120,6 +124,7 @@ public class OrderDaoH2Impl extends DaoBase<OrderEntity> implements OrderDao {
 		Optional<OrderEntity> entity = repository.findById(id);
 
 		if (!entity.isPresent()) {
+			LOG.error("Entity does not exists!");
 			throw new RuntimeException("Entity does not exists!");
 		}
 
@@ -134,10 +139,11 @@ public class OrderDaoH2Impl extends DaoBase<OrderEntity> implements OrderDao {
 		dto.setTransactionId(entity.getTransactionId());
 
 		Set<OrderItemDto> items = new HashSet<>();
-		System.out.println("order convert to dto: " + entity.getItems());
+
 		for (OrderItemEntity item : SetUtils.emptyIfNull(entity.getItems())) {
 			items.add(new OrderItemDto(item.getId(), new IdDto(item.getFkBook()), item.getQuantity()));
 		}
+
 		dto.setItems(items);
 		return dto;
 	}

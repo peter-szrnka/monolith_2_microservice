@@ -3,6 +3,8 @@ package hu.szrnkapeter.monolith.service;
 import java.util.List;
 
 import org.apache.commons.collections4.SetUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,6 +24,8 @@ import hu.szrnkapeter.monolith.type.OrderStatus;
  */
 @Service
 public class OrderServiceImpl extends BaseService<OrderDto, OrderDao> implements OrderService {
+	
+	private static final Logger LOG = LoggerFactory.getLogger(OrderServiceImpl.class);
 
 	@Autowired
 	private BookDao bookDao;
@@ -75,8 +79,7 @@ public class OrderServiceImpl extends BaseService<OrderDto, OrderDao> implements
 			}
 		}
 
-		System.out.println("dto items @ createDraft: " + dto.getItems());
-
+		LOG.info("Draft created!");
 		return dao.save(dto);
 	}
 
