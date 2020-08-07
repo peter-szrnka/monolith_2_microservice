@@ -1,6 +1,6 @@
 package hu.szrnkapeter.monolith.service;
 
-import hu.szrnkapeter.monolith.dto.IdDto;
+import hu.szrnkapeter.monolith.dto.IdResponseDto;
 import hu.szrnkapeter.monolith.dto.PaymentDto;
 
 /**
@@ -16,5 +16,5 @@ public interface PaymentService extends AbstractService<PaymentDto> {
 	 * @param orderId
 	 * @return
 	 */
-	IdDto payOrder(Long orderId);
+	IdResponseDto payOrder(Long orderId);
 }

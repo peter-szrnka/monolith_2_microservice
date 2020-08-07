@@ -1,14 +1,15 @@
 package hu.szrnkapeter.monolith.dto;
 
+import java.util.List;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
 
 @AllArgsConstructor
-@NoArgsConstructor
 @Data
-public class IdDto {
+@EqualsAndHashCode(callSuper=false)
+public class BookListDto extends BaseResponseDto {
 
-	private Long id;
+	private List<BookDto> books;
 }

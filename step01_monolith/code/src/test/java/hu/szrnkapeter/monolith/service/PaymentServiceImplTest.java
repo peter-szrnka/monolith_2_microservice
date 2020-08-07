@@ -13,6 +13,7 @@ import org.mockito.Mockito;
 import hu.szrnkapeter.monolith.AbstractServiceTest;
 import hu.szrnkapeter.monolith.dao.PaymentDao;
 import hu.szrnkapeter.monolith.dto.IdDto;
+import hu.szrnkapeter.monolith.dto.IdResponseDto;
 import hu.szrnkapeter.monolith.dto.PaymentDto;
 
 public class PaymentServiceImplTest extends AbstractServiceTest {
@@ -49,8 +50,8 @@ public class PaymentServiceImplTest extends AbstractServiceTest {
 
 	@Test
 	public void test04_payOrder() {
-		Mockito.when(dao.save(ArgumentMatchers.any(PaymentDto.class))).thenReturn(new IdDto(1L));
-		IdDto response = service.payOrder(1L);
+		Mockito.when(dao.save(ArgumentMatchers.any(PaymentDto.class))).thenReturn(new IdResponseDto(1L));
+		IdResponseDto response = service.payOrder(1L);
 		Assert.assertNotNull(RESPONSE_CANNOT_NULL, response);
 		Assert.assertEquals("Wrong response!", Long.valueOf(1L), response.getId());
 	}

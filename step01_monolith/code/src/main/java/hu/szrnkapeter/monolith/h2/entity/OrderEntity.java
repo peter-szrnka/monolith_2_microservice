@@ -1,7 +1,7 @@
 package hu.szrnkapeter.monolith.h2.entity;
 
 import java.time.LocalDate;
-import java.util.List;
+import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -27,8 +27,8 @@ public class OrderEntity {
 	@GeneratedValue (strategy = GenerationType.AUTO)
 	@Column(name ="ID")
 	private Long id;
-	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-	private List<BookEntity> books;
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "fkOrder", orphanRemoval = true)
+	private Set<OrderItemEntity> items;
 	@Column(name ="ORDER_STATUS")
 	@Enumerated(EnumType.STRING)
 	private OrderStatus orderStatus = OrderStatus.INITIATED;

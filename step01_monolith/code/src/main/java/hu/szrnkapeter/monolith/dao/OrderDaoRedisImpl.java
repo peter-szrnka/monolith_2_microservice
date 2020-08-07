@@ -1,19 +1,25 @@
 package hu.szrnkapeter.monolith.dao;
 
-import java.util.ArrayList;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
-import org.apache.commons.collections4.ListUtils;
+import org.apache.commons.collections4.SetUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;
 
+import com.google.common.collect.Sets;
+
 import hu.szrnkapeter.monolith.dto.IdDto;
+import hu.szrnkapeter.monolith.dto.IdResponseDto;
 import hu.szrnkapeter.monolith.dto.OrderDto;
+import hu.szrnkapeter.monolith.dto.OrderItemDto;
 import hu.szrnkapeter.monolith.redis.entity.BookEntity;
 import hu.szrnkapeter.monolith.redis.entity.OrderEntity;
+import hu.szrnkapeter.monolith.redis.entity.OrderItemEntity;
 import hu.szrnkapeter.monolith.redis.repository.RedisBookRepository;
 import hu.szrnkapeter.monolith.redis.repository.RedisOrderRepository;
 import hu.szrnkapeter.monolith.utils.Constants;
@@ -66,31 +72,38 @@ public class OrderDaoRedisImpl extends DaoBase<OrderEntity> implements OrderDao 
 	 * OrderDto)
 	 */
 	@Override
-	public IdDto save(OrderDto dto) {
+	public IdResponseDto save(OrderDto dto) {
 		OrderEntity entity = new OrderEntity();
 
 		getByIdOrThrowError(entity, dto.getId());
 
-		entity.setId(dto.getId());
-		entity.setBooks(convertDtoListToEntity(dto.getBooks()));
-		entity.setOrderDate(dto.getOrderDate());
+		if (entity.getId() == null) {
+			entity.setId(dto.getId());
+		}
+		entity.setItems(convertDtoListToEntity(dto.getItems()));
+		entity.setOrderDate(LocalDate.now());
 		entity.setOrderStatus(dto.getOrderStatus());
 		entity.setTransactionId(dto.getTransactionId());
 		entity = repository.save(entity);
 
-		return new IdDto(entity.getId());
+		return new IdResponseDto(entity.getId());
 	}
 
-	private List<BookEntity> convertDtoListToEntity(List<IdDto> books) {
-		return ListUtils.emptyIfNull(books).stream().map(dto -> {
-			Optional<BookEntity> entity = bookRepository.findById(dto.getId());
+	private Set<OrderItemEntity> convertDtoListToEntity(Set<OrderItemDto> items) {
+		return SetUtils.emptyIfNull(items).stream().map(dto -> {
+			Optional<BookEntity> entityResult = bookRepository.findById(dto.getBook().getId());
 
-			if (!entity.isPresent()) {
+			if (!entityResult.isPresent()) {
 				return null;
 			}
 
-			return entity.get();
-		}).collect(Collectors.toList());
+			BookEntity book = entityResult.get();
+
+			OrderItemEntity entity = new OrderItemEntity();
+			entity.setFkBook(book.getId());
+			entity.setQuantity(dto.getQuantity());
+			return entity;
+		}).collect(Collectors.toSet());
 	}
 
 	/*
@@ -116,11 +129,11 @@ public class OrderDaoRedisImpl extends DaoBase<OrderEntity> implements OrderDao 
 		dto.setOrderStatus(entity.getOrderStatus());
 		dto.setTransactionId(entity.getTransactionId());
 
-		List<IdDto> books = new ArrayList<>();
-		for (BookEntity book : ListUtils.emptyIfNull(entity.getBooks())) {
-			books.add(new IdDto(book.getId()));
+		Set<OrderItemDto> items = Sets.newHashSet();
+		for (OrderItemEntity item : SetUtils.emptyIfNull(entity.getItems())) {
+			items.add(new OrderItemDto(item.getId(), new IdDto(item.getFkBook()), item.getQuantity()));
 		}
-		dto.setBooks(books);
+		dto.setItems(items);
 		return dto;
 	}
 }

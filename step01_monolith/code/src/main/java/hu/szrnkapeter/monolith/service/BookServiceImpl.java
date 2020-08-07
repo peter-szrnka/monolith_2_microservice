@@ -7,7 +7,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import hu.szrnkapeter.monolith.dao.BookDao;
 import hu.szrnkapeter.monolith.dto.BookDto;
-import hu.szrnkapeter.monolith.dto.IdDto;
+import hu.szrnkapeter.monolith.dto.IdResponseDto;
 
 /**
  * Default implementation of {@link BookService}.
@@ -53,7 +53,7 @@ public class BookServiceImpl extends BaseService<BookDto, BookDao> implements Bo
 	 */
 	@Transactional
 	@Override
-	public IdDto save(BookDto dto) {
+	public IdResponseDto save(BookDto dto) {
 		return dao.save(dto);
 	}
 }

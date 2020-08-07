@@ -9,7 +9,7 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;
 
 import hu.szrnkapeter.monolith.dto.BookDto;
-import hu.szrnkapeter.monolith.dto.IdDto;
+import hu.szrnkapeter.monolith.dto.IdResponseDto;
 import hu.szrnkapeter.monolith.redis.entity.BookEntity;
 import hu.szrnkapeter.monolith.redis.repository.RedisBookRepository;
 import hu.szrnkapeter.monolith.utils.Constants;
@@ -36,6 +36,7 @@ public class BookDaoRedisImpl extends DaoBase<BookEntity> implements BookDao {
 	 */
 	@Override
 	public void delete(Long id) {
+		getByIdOrThrowError(null, id);
 		repository.deleteById(id);
 	}
 
@@ -54,7 +55,7 @@ public class BookDaoRedisImpl extends DaoBase<BookEntity> implements BookDao {
 	 */
 	@Override
 	public BookDto getById(Long id) {
-		Optional<BookEntity> entity = repository.findById(id);
+		Optional<BookEntity> entity = daoFindById(id);
 
 		if(!entity.isPresent()) {
 			throw new RuntimeException("Entity does not exists!");
@@ -68,7 +69,7 @@ public class BookDaoRedisImpl extends DaoBase<BookEntity> implements BookDao {
 	 * @see hu.szrnkapeter.monolith.dao.BookDao#save(hu.szrnkapeter.monolith.dto.BookDto)
 	 */
 	@Override
-	public IdDto save(BookDto dto) {
+	public IdResponseDto save(BookDto dto) {
 		BookEntity entity = new BookEntity();
 
 		getByIdOrThrowError(entity, dto.getId());
@@ -79,7 +80,7 @@ public class BookDaoRedisImpl extends DaoBase<BookEntity> implements BookDao {
 		entity.setTitle(dto.getTitle());
 		entity = repository.save(entity);
 		
-		return new IdDto(entity.getId());
+		return new IdResponseDto(entity.getId());
 	}
 
 	private BookDto convertToDto(BookEntity entity) {

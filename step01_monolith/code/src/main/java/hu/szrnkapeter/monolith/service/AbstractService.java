@@ -3,6 +3,13 @@ package hu.szrnkapeter.monolith.service;
 import java.util.List;
 
 public interface AbstractService<T> {
+	
+	/**
+	 * Deletes a book by id
+	 * 
+	 * @param id
+	 */
+	void delete(Long id);
 
 	/**
 	 * Returns all books.
@@ -18,11 +25,4 @@ public interface AbstractService<T> {
 	 * @return
 	 */
 	T getById(Long id);
-	
-	/**
-	 * Deletes a book by id
-	 * 
-	 * @param id
-	 */
-	void delete(Long id);
 }

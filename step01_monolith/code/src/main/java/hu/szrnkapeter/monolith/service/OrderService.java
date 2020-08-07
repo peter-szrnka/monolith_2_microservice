@@ -1,6 +1,6 @@
 package hu.szrnkapeter.monolith.service;
 
-import hu.szrnkapeter.monolith.dto.IdDto;
+import hu.szrnkapeter.monolith.dto.IdResponseDto;
 import hu.szrnkapeter.monolith.dto.OrderDto;
 
 /**
@@ -16,7 +16,7 @@ public interface OrderService extends AbstractService<OrderDto> {
 	 * @param dto
 	 * @return
 	 */
-	IdDto createDraft(OrderDto dto);
+	IdResponseDto createDraft(OrderDto dto);
 
 	/**
 	 * Initializes the payment

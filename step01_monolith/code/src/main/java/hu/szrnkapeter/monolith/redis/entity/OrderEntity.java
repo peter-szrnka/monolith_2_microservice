@@ -1,7 +1,7 @@
 package hu.szrnkapeter.monolith.redis.entity;
 
 import java.time.LocalDate;
-import java.util.List;
+import java.util.Set;
 
 import org.springframework.data.redis.core.RedisHash;
 
@@ -13,7 +13,7 @@ import lombok.Data;
 public class OrderEntity {
 
 	private Long id;
-	private List<BookEntity> books;
+	private Set<OrderItemEntity> items;
 	private OrderStatus orderStatus = OrderStatus.INITIATED;
 	private LocalDate orderDate;
 	private String transactionId;

@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import hu.szrnkapeter.monolith.dao.PaymentDao;
-import hu.szrnkapeter.monolith.dto.IdDto;
+import hu.szrnkapeter.monolith.dto.IdResponseDto;
 import hu.szrnkapeter.monolith.dto.PaymentDto;
 
 /**
@@ -59,11 +59,11 @@ public class PaymentServiceImpl extends BaseService<PaymentDto, PaymentDao> impl
 	 */
 	@Transactional
 	@Override
-	public IdDto payOrder(Long orderId) {
+	public IdResponseDto payOrder(Long orderId) {
 		PaymentDto dto = new PaymentDto();
 		dto.setTransactionId(UUID.randomUUID().toString());
 		dto.setPaymentDate(new Date());
-		IdDto response = dao.save(dto);
+		IdResponseDto response = dao.save(dto);
 		
 		finalizationService.finalizeOrder(orderId, dto.getTransactionId());
 		return response;

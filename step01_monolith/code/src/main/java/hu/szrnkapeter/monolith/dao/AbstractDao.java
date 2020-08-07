@@ -2,26 +2,26 @@ package hu.szrnkapeter.monolith.dao;
 
 import java.util.List;
 
-import hu.szrnkapeter.monolith.dto.IdDto;
+import hu.szrnkapeter.monolith.dto.IdResponseDto;
 
 public interface AbstractDao<T> {
 
 	/**
-	 * Deletes a book.
+	 * Deletes an entity.
 	 * 
 	 * @param id
 	 */
 	void delete(Long id);
 	
 	/**
-	 * Returns all books.
+	 * Returns all entities.
 	 * 
 	 * @return
 	 */
 	List<T> getAll();
 	
 	/**
-	 * Returns a book by id.
+	 * Returns an entity by id.
 	 * 
 	 * @param id
 	 * @return
@@ -29,10 +29,10 @@ public interface AbstractDao<T> {
 	T getById(Long id);
 	
 	/**
-	 * Saves a new book.
+	 * Saves a new entity.
 	 * 
 	 * @param dto
 	 * @return
 	 */
-	IdDto save(T dto);
+	IdResponseDto save(T dto);
 }

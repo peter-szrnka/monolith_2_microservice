@@ -25,6 +25,7 @@ public class BookDaoH2ImplTest extends AbstractServiceTest {
 
 	@Test
 	public void test01_delete() {
+		Mockito.when(repository.findById(ArgumentMatchers.anyLong())).thenReturn(Optional.of(new BookEntity()));
 		service.delete(1L);
 		Mockito.verify(repository).deleteById(ArgumentMatchers.anyLong());
 	}

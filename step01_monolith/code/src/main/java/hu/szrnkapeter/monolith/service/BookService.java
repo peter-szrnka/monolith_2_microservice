@@ -2,6 +2,7 @@ package hu.szrnkapeter.monolith.service;
 
 import hu.szrnkapeter.monolith.dto.BookDto;
 import hu.szrnkapeter.monolith.dto.IdDto;
+import hu.szrnkapeter.monolith.dto.IdResponseDto;
 
 /**
  * DAO layer of books.
@@ -15,5 +16,5 @@ public interface BookService extends AbstractService<BookDto> {
 	 * 
 	 * @param dto
 	 */
-	IdDto save(BookDto dto);
+	IdResponseDto save(BookDto dto);
 }

@@ -8,7 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;
 
-import hu.szrnkapeter.monolith.dto.IdDto;
+import hu.szrnkapeter.monolith.dto.IdResponseDto;
 import hu.szrnkapeter.monolith.dto.PaymentDto;
 import hu.szrnkapeter.monolith.h2.entity.PaymentEntity;
 import hu.szrnkapeter.monolith.h2.repository.H2PaymentRepository;
@@ -55,7 +55,7 @@ public class PaymentDaoH2Impl extends DaoBase<PaymentEntity> implements PaymentD
 	 * @see hu.szrnkapeter.monolith.dao.BookDao#save(hu.szrnkapeter.monolith.dto.PaymentDto)
 	 */
 	@Override
-	public IdDto save(PaymentDto dto) {
+	public IdResponseDto save(PaymentDto dto) {
 		PaymentEntity entity = new PaymentEntity();
 		
 		getByIdOrThrowError(entity, dto.getId());
@@ -65,7 +65,7 @@ public class PaymentDaoH2Impl extends DaoBase<PaymentEntity> implements PaymentD
 		entity.setTransactionId(dto.getTransactionId());
 		entity = repository.save(entity);
 		
-		return new IdDto(entity.getId());
+		return new IdResponseDto(entity.getId());
 	}
 
 	/*

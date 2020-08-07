@@ -11,13 +11,15 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 
-import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 
 import hu.szrnkapeter.monolith.AbstractServiceTest;
 import hu.szrnkapeter.monolith.dto.IdDto;
 import hu.szrnkapeter.monolith.dto.OrderDto;
+import hu.szrnkapeter.monolith.dto.OrderItemDto;
 import hu.szrnkapeter.monolith.h2.entity.BookEntity;
 import hu.szrnkapeter.monolith.h2.entity.OrderEntity;
+import hu.szrnkapeter.monolith.h2.entity.OrderItemEntity;
 import hu.szrnkapeter.monolith.h2.repository.H2BookRepository;
 import hu.szrnkapeter.monolith.h2.repository.H2OrderRepository;
 
@@ -58,7 +60,7 @@ public class OrderDaoH2ImplTest extends AbstractServiceTest {
 		}
 
 		OrderEntity result = new OrderEntity();
-		result.setBooks(Lists.newArrayList(new BookEntity()));
+		result.setItems(Sets.newHashSet(new OrderItemEntity()));
 		mockOptional = Optional.of(result);
 		Mockito.when(repository.findById(ArgumentMatchers.anyLong())).thenReturn(mockOptional);
 		response = service.getById(1L);
@@ -87,11 +89,15 @@ public class OrderDaoH2ImplTest extends AbstractServiceTest {
 		// Test3
 		BookEntity mockBook = new BookEntity();
 		Mockito.when(bookRepository.findById(ArgumentMatchers.eq(1L))).thenReturn(Optional.of(mockBook));
-		dto.setBooks(Lists.newArrayList(new IdDto(1L),new IdDto(2L)));
+		dto.setItems(Sets.newHashSet(createOrderItemDto(1L, 1), createOrderItemDto(2L, 1)));
 		OrderEntity mockEntity = new OrderEntity();
-		mockEntity.setBooks(Lists.newArrayList(new BookEntity()));
+		mockEntity.setItems(Sets.newHashSet(new OrderItemEntity()));
 		mockResult = Optional.of(mockEntity);
 		Mockito.when(repository.findById(ArgumentMatchers.anyLong())).thenReturn(mockResult);
 		service.save(dto);
+	}
+
+	private OrderItemDto createOrderItemDto(Long id, Integer quantity) {
+		return new OrderItemDto(1L, new IdDto(id), quantity);
 	}
 }

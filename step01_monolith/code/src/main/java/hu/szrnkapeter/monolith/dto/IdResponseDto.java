@@ -8,7 +8,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-public class IdDto {
+@EqualsAndHashCode(callSuper=false)
+public class IdResponseDto extends BaseResponseDto {
 
 	private Long id;
 }

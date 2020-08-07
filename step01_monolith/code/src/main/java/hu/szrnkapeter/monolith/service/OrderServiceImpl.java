@@ -2,17 +2,18 @@ package hu.szrnkapeter.monolith.service;
 
 import java.util.List;
 
-import org.apache.commons.collections4.ListUtils;
+import org.apache.commons.collections4.SetUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import hu.szrnkapeter.monolith.dao.BookDao;
 import hu.szrnkapeter.monolith.dao.OrderDao;
 import hu.szrnkapeter.monolith.dto.BookDto;
 import hu.szrnkapeter.monolith.dto.IdDto;
+import hu.szrnkapeter.monolith.dto.IdResponseDto;
 import hu.szrnkapeter.monolith.dto.OrderDto;
+import hu.szrnkapeter.monolith.dto.OrderItemDto;
 import hu.szrnkapeter.monolith.type.OrderStatus;
 
 /**
@@ -62,17 +63,19 @@ public class OrderServiceImpl extends BaseService<OrderDto, OrderDao> implements
 	}
 
 	@Override
-	public IdDto createDraft(OrderDto dto) {
+	public IdResponseDto createDraft(OrderDto dto) {
 		if (dto.getId() != null || !OrderStatus.DRAFT.equals(dto.getOrderStatus())) {
 			throw new RuntimeException("Only drafts are allowed!");
 		}
 
-		for (IdDto idDto : ListUtils.emptyIfNull(dto.getBooks())) {
-			BookDto book = bookDao.getById(idDto.getId());
+		for (OrderItemDto idDto : SetUtils.emptyIfNull(dto.getItems())) {
+			BookDto book = bookDao.getById(idDto.getBook().getId());
 			if (book == null) {
-				throw new RuntimeException("Book with id=" + idDto.getId() + " does not exists!");
+				throw new RuntimeException("Book with id=" + idDto.getBook().getId() + " does not exists!");
 			}
 		}
+	
+		System.out.println("dto items @ createDraft: " + dto.getItems());
 
 		return dao.save(dto);
 	}
@@ -88,11 +91,10 @@ public class OrderServiceImpl extends BaseService<OrderDto, OrderDao> implements
 		
 		dto.setOrderStatus(OrderStatus.INITIATED);
 
-		IdDto response = dao.save(dto);
+		IdResponseDto response = dao.save(dto);
 		startPayment(response.getId());
 	}
 
-	@Transactional
 	@Override
 	public void finalizeOrder(Long orderId, String transactionId) {
 		OrderDto dto = dao.getById(orderId);
@@ -103,11 +105,10 @@ public class OrderServiceImpl extends BaseService<OrderDto, OrderDao> implements
 		
 		dto.setOrderStatus(OrderStatus.FINALIZED);
 		dto.setTransactionId(transactionId);
-		IdDto response = dao.save(dto);
+		IdResponseDto response = dao.save(dto);
 		System.out.println("Order finalized! Id = " + response.getId());
 	}
 
-	@Transactional(propagation = Propagation.REQUIRES_NEW)
 	@Override
 	public void startPayment(Long orderId) {
 		OrderDto dto = dao.getById(orderId);
