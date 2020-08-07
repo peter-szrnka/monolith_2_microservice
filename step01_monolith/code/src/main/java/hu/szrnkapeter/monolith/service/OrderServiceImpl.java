@@ -10,7 +10,6 @@ import org.springframework.transaction.annotation.Transactional;
 import hu.szrnkapeter.monolith.dao.BookDao;
 import hu.szrnkapeter.monolith.dao.OrderDao;
 import hu.szrnkapeter.monolith.dto.BookDto;
-import hu.szrnkapeter.monolith.dto.IdDto;
 import hu.szrnkapeter.monolith.dto.IdResponseDto;
 import hu.szrnkapeter.monolith.dto.OrderDto;
 import hu.szrnkapeter.monolith.dto.OrderItemDto;
@@ -62,6 +61,7 @@ public class OrderServiceImpl extends BaseService<OrderDto, OrderDao> implements
 		dao.delete(id);
 	}
 
+	@Transactional
 	@Override
 	public IdResponseDto createDraft(OrderDto dto) {
 		if (dto.getId() != null || !OrderStatus.DRAFT.equals(dto.getOrderStatus())) {
@@ -74,7 +74,7 @@ public class OrderServiceImpl extends BaseService<OrderDto, OrderDao> implements
 				throw new RuntimeException("Book with id=" + idDto.getBook().getId() + " does not exists!");
 			}
 		}
-	
+
 		System.out.println("dto items @ createDraft: " + dto.getItems());
 
 		return dao.save(dto);
@@ -84,13 +84,9 @@ public class OrderServiceImpl extends BaseService<OrderDto, OrderDao> implements
 	@Override
 	public void initPayment(Long orderId) {
 		OrderDto dto = dao.getById(orderId);
-		
-		if(dto == null || !OrderStatus.DRAFT.equals(dto.getOrderStatus())) {
-			throw new RuntimeException("Only DRAFT payments are allowed!");
-		}
-		
-		dto.setOrderStatus(OrderStatus.INITIATED);
+		checkDto(dto, OrderStatus.DRAFT);
 
+		dto.setOrderStatus(OrderStatus.INITIATED);
 		IdResponseDto response = dao.save(dto);
 		startPayment(response.getId());
 	}
@@ -98,11 +94,8 @@ public class OrderServiceImpl extends BaseService<OrderDto, OrderDao> implements
 	@Override
 	public void finalizeOrder(Long orderId, String transactionId) {
 		OrderDto dto = dao.getById(orderId);
-		
-		if(dto == null || !OrderStatus.PAYMENT_STARTED.equals(dto.getOrderStatus())) {
-			throw new RuntimeException("Only PAYMENT_STARTED payments are allowed!");
-		}
-		
+		checkDto(dto, OrderStatus.PAYMENT_STARTED);
+
 		dto.setOrderStatus(OrderStatus.FINALIZED);
 		dto.setTransactionId(transactionId);
 		IdResponseDto response = dao.save(dto);
@@ -112,14 +105,17 @@ public class OrderServiceImpl extends BaseService<OrderDto, OrderDao> implements
 	@Override
 	public void startPayment(Long orderId) {
 		OrderDto dto = dao.getById(orderId);
-		
-		if(dto == null || !OrderStatus.INITIATED.equals(dto.getOrderStatus())) {
-			throw new RuntimeException("Only INITIATED payments are allowed!");
-		}
-		
+		checkDto(dto, OrderStatus.INITIATED);
+
 		dto.setOrderStatus(OrderStatus.PAYMENT_STARTED);
 		dao.save(dto);
-		
+
 		paymentService.payOrder(orderId);
+	}
+
+	private void checkDto(OrderDto dto, OrderStatus status) {
+		if (dto == null || !status.equals(dto.getOrderStatus())) {
+			throw new RuntimeException("Only " + status.name() + " payments are allowed!");
+		}
 	}
 }
