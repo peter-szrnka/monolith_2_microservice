@@ -2,3 +2,6 @@
 /step01_monolith/code/.project
 /step01_monolith/code/.settings
 /step01_monolith/code/.classpath
+.classpath
+.project
+/step02_intermediate/m2m-core/code/.settings
